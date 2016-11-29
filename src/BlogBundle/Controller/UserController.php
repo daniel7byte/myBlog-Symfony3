@@ -31,26 +31,33 @@ class UserController extends Controller
         $form->handleRequest($request);
         if($form->isSubmitted()){
             if ($form->isValid()) {
-                $user = new Users();
-                $user->setName($form->get("name")->getData());
-                $user->setSurname($form->get("surname")->getData());
-                $user->setEmail($form->get("email")->getData());
-
-                $factory = $this->get("security.encoder_factory");
-                $encoder = $factory->getEncoder($user);
-                $password = $encoder->encodePassword($form->get("password")->getData(), $user->getSalt());
-
-                $user->setPassword($password );
-                $user->setRole("ROLE_USER");
-                $user->setImagen(null);
-
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $flush = $em->flush();
-                if ($flush == null) {
-                    $status = "Se creo el usuario";
-                } else {
-                    $status = "No se creo el usuario";
+                $userRepo = $em->getRepository("BlogBundle:Users");
+                $user_count = $userRepo->findOneBy(["email" => $form->get("email")->getData()]);
+                if(count($user_count) == 0){
+                    $user = new Users();
+                    $user->setName($form->get("name")->getData());
+                    $user->setSurname($form->get("surname")->getData());
+                    $user->setEmail($form->get("email")->getData());
+
+                    $factory = $this->get("security.encoder_factory");
+                    $encoder = $factory->getEncoder($user);
+                    $password = $encoder->encodePassword($form->get("password")->getData(), $user->getSalt());
+
+                    $user->setPassword($password );
+                    $user->setRole("ROLE_USER");
+                    $user->setImagen(null);
+
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($user);
+                    $flush = $em->flush();
+                    if ($flush == null) {
+                        $status = "Se creo el usuario";
+                    } else {
+                        $status = "No se creo el usuario";
+                    }
+                }else{
+                    $status = "El usuario ya esta creado";
                 }
             } else {
                 $status = "No se creo el usuario";
