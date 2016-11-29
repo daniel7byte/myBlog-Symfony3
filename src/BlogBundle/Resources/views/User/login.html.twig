@@ -1,0 +1,42 @@
+{% extends 'BlogBundle:layouts:layout.html.twig' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="well">
+            <form class="form-horizontal" action="{{ path("login_check") }}" method="post">
+                <input type="hidden" name="_target_path" value="/login">
+                <fieldset>
+                    <legend>Login</legend>
+                    <div class="form-group">
+                        <label for="email" class="col-lg-2 control-label">Email: </label>
+                        <div class="col-lg-10">
+                            <input type="email" class="form-control" id="username" name="_username" value="{{ last_username }}" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="col-lg-2 control-label">Contraseña: </label>
+                        <div class="col-lg-10">
+                            <input type="password" class="form-control" id="password" name="_password" placeholder="Contraseña">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            <button type="submit" class="btn btn-primary">Entrar</button>
+                        </div>
+                    </div>
+                    <hr>
+
+                    {% if app.user != null %}
+                        {{ dump(app.user )}}
+                    {% endif %}
+
+                    {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                        {{app.user.name}} {{app.user.surname}} {{app.user.email}}  {{ app.user.role }}
+                    {%endif%}
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
