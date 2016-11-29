@@ -22,6 +22,11 @@ class UserController extends Controller
 
     public function loginAction(Request $request)
     {
+
+        if ($this->getUser()){
+            return $this->redirectToRoute('blog_homepage');
+        }
+
         $authenticationUtils = $this->get("security.authentication_utils");
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
